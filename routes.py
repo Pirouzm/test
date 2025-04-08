@@ -22,6 +22,11 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+# Add a global context processor to provide current date/time to all templates
+@app.context_processor
+def inject_now():
+    return {'now': datetime.now()}
+
 # Main routes
 @app.route('/')
 def index():

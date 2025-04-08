@@ -23,10 +23,10 @@ openai = OpenAI(api_key=OPENAI_API_KEY)
 PERSISTENCE_DIRECTORY = os.path.join(os.getcwd(), 'chromadb')
 os.makedirs(PERSISTENCE_DIRECTORY, exist_ok=True)
 
-chroma_client = chromadb.Client(Settings(
-    chroma_db_impl="duckdb+parquet",
-    persist_directory=PERSISTENCE_DIRECTORY
-))
+# Updated ChromaDB client initialization (following newer API)
+chroma_client = chromadb.PersistentClient(
+    path=PERSISTENCE_DIRECTORY
+)
 
 # Create a collection for document embeddings
 try:
