@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row align-items-center py-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold">AI-Powered ESA Report Generator</h1>
+            <p class="lead text-muted mb-4">
+                Generate comprehensive Emotional Support Animal (ESA) reports using advanced AI technology that analyzes your conversations and documents.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('chat') }}" class="btn btn-primary btn-lg px-4 me-md-2">Start Chatting</a>
+                    <a href="{{ url_for('upload') }}" class="btn btn-outline-secondary btn-lg px-4">Upload Documents</a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 me-md-2">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="350" height="350" viewBox="0 0 800 800" style="max-width: 100%; height: auto;">
+                <circle cx="400" cy="400" r="350" fill="#212529" />
+                <path d="M615.94 253.69c-6.7-6.7-14.95-11.39-23.94-13.69a48.76 48.76 0 0 0-27.31.69c-8.99 2.3-17.23 6.99-23.94 13.69l-28.75 28.75-28.75-28.75c-6.7-6.7-14.95-11.39-23.94-13.69a48.76 48.76 0 0 0-27.31.69c-8.99 2.3-17.23 6.99-23.94 13.69-13.26 13.26-19.89 30.62-19.89 48 0 17.38 6.63 34.74 19.89 48l73.93 73.93c4.42 4.42 10.25 6.63 16.06 6.63 5.81 0 11.64-2.21 16.06-6.63l73.93-73.93c13.26-13.26 19.89-30.62 19.89-48 0-17.38-6.63-34.74-19.89-48zm-36.84 48c0 8.79-3.36 17.08-9.46 23.19l-57.81 57.81-57.81-57.81c-6.1-6.1-9.46-14.4-9.46-23.19 0-8.79 3.36-17.08 9.46-23.19 6.1-6.1 14.4-9.46 23.19-9.46 8.79 0 17.08 3.36 23.19 9.46l12.69 12.69c8.84 8.84 23.28 8.84 32.13 0l12.69-12.69c6.1-6.1 14.4-9.46 23.19-9.46 8.79 0 17.08 3.36 23.19 9.46 6.1 6.1 9.46 14.4 9.46 23.19z" fill="#6d28d9" />
+                <path d="M258.15 458.44c-35.55-11.2-59.42-42.9-59.42-78.96v-40.63c0-45.24 37.22-82.03 82.95-82.03h35.94c16.48 0 32.24 4.91 45.71 14.18 3.52 2.42 8.31 2.27 11.68-.36 3.36-2.63 4.72-7.07 3.4-11.13-12.28-37.92-48.42-63.84-89.13-63.84h-53.91c-51.76 0-93.88 41.4-93.88 92.31v49.81c0 50.91 42.12 92.31 93.88 92.31h13.48c5.33 0 9.66-4.24 9.66-9.46 0-2.26-.79-4.2-2.09-5.81-4.27-5.3-6.93-11.81-7.43-18.88-.22-3.2 1.23-6.3 3.82-8.17 2.58-1.88 5.92-2.24 8.82-.97l-5.48-28.37zm252.28 4.93c-35.55-11.2-59.42-42.9-59.42-78.96v-40.63c0-45.24 37.22-82.03 82.95-82.03h35.94c16.48 0 32.24 4.91 45.71 14.18 3.52 2.42 8.31 2.27 11.68-.36 3.36-2.63 4.72-7.07 3.4-11.13-12.28-37.92-48.42-63.84-89.13-63.84h-53.91c-51.76 0-93.88 41.4-93.88 92.31v49.81c0 50.91 42.12 92.31 93.88 92.31h13.48c5.33 0 9.66-4.24 9.66-9.46 0-2.26-.79-4.2-2.09-5.81-4.27-5.3-6.93-11.81-7.43-18.88-.22-3.2 1.23-6.3 3.82-8.17 2.58-1.88 5.92-2.24 8.82-.97l-5.48-28.37zm-5.48 64.19h-152.9c-12.02 0-21.76 9.58-21.76 21.38v76.38c0 11.8 9.74 21.38 21.76 21.38h152.9c12.02 0 21.76-9.58 21.76-21.38v-76.38c0-11.8-9.74-21.38-21.76-21.38zm0 35.63v47.88h-152.9v-47.88h152.9z" fill="#f8f9fa" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5 fw-bold">How It Works</h2>
+            <p class="lead text-muted">Our AI-powered system makes generating ESA reports simple and efficient</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-dark">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-comments fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h4">Chat with AI</h3>
+                    <p class="card-text text-muted">Engage in natural conversation with our AI assistant to discuss your emotional support needs and mental health history.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-dark">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-file-upload fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h4">Upload Documents</h3>
+                    <p class="card-text text-muted">Enhance your report by uploading relevant medical documentation, previous evaluations, or other supporting evidence.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-dark">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-file-medical-alt fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h4">Generate Report</h3>
+                    <p class="card-text text-muted">Our AI uses advanced RAG technology to analyze your conversation and documents, generating a comprehensive ESA report.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Register Forms -->
+    {% if not current_user.is_authenticated %}
+        <div class="row py-5">
+            <div class="col-md-6 {% if register %}d-block{% else %}d-none d-md-block{% endif %}">
+                <div class="card border-0 bg-dark">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Create an Account</h3>
+                        <form action="{{ url_for('register') }}" method="post">
+                            <div class="mb-3">
+                                <label for="register-username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="register-username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="register-email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="register-password" name="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 {% if login or not register %}d-block{% else %}d-none d-md-block{% endif %} {% if not register %}mt-4 mt-md-0{% endif %}">
+                <div class="card border-0 bg-dark">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Login</h3>
+                        <form action="{{ url_for('login') }}" method="post">
+                            <div class="mb-3">
+                                <label for="login-username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="login-username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" name="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

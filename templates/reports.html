@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block head %}
+<style>
+    .report-card {
+        transition: transform 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .report-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .report-content {
+        white-space: pre-line;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .report-container {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .report-actions {
+        position: sticky;
+        bottom: 0;
+        background-color: #212529;
+        padding: 1rem;
+        border-top: 1px solid #343a40;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-4">ESA Reports</h1>
+        <p class="text-muted">
+            View and download your generated Emotional Support Animal reports.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    {% if selected_report %}
+        <!-- Report View Mode -->
+        <div class="col-md-4">
+            <div class="card border-0 bg-dark h-100">
+                <div class="card-header bg-dark">
+                    <h2 class="h5 mb-0">Your Reports</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for report in reports %}
+                            <a href="{{ url_for('view_report', report_id=report.id) }}" class="list-group-item list-group-item-action bg-dark {% if report.id == selected_report.id %}active{% endif %}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ report.title }}</h5>
+                                    <small>{{ report.creation_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <small class="text-muted">Last updated: {{ report.last_updated.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer bg-dark">
+                    <a href="{{ url_for('chat') }}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="fas fa-comment-medical me-1"></i> Generate New Report
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card border-0 bg-dark">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">{{ selected_report.title }}</h2>
+                    <small class="text-muted">Created: {{ selected_report.creation_date.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="report-container">
+                        <div class="report-content">{{ selected_report.content }}</div>
+                    </div>
+                </div>
+                <div class="card-footer bg-dark report-actions">
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('reports') }}" class="btn btn-outline-light">
+                            <i class="fas fa-arrow-left me-1"></i> Back to All Reports
+                        </a>
+                        <div>
+                            <a href="{{ url_for('download_report', report_id=selected_report.id) }}" class="btn btn-primary me-2">
+                                <i class="fas fa-download me-1"></i> Download
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReportModal">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delete Report Modal -->
+        <div class="modal fade" id="deleteReportModal" tabindex="-1" aria-labelledby="deleteReportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteReportModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this report? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{{ url_for('delete_report', report_id=selected_report.id) }}" method="POST">
+                            <button type="submit" class="btn btn-danger">Delete Report</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Reports List Mode -->
+        {% if reports %}
+            <div class="col-12">
+                <div class="row">
+                    {% for report in reports %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card border-0 bg-dark report-card h-100" onclick="window.location='{{ url_for('view_report', report_id=report.id) }}'">
+                                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                                    <h2 class="h5 mb-0">{{ report.title }}</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-2">
+                                        <i class="far fa-calendar-alt me-1"></i> {{ report.creation_date.strftime('%Y-%m-%d') }}
+                                    </p>
+                                    <p class="report-preview">
+                                        {{ report.content[:150] }}{% if report.content|length > 150 %}...{% endif %}
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-dark">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Last updated: {{ report.last_updated.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        <a href="{{ url_for('view_report', report_id=report.id) }}" class="btn btn-sm btn-outline-light">
+                                            <i class="fas fa-eye me-1"></i> View
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-file-medical-alt fa-5x text-muted"></i>
+                </div>
+                <h3>No Reports Generated Yet</h3>
+                <p class="text-muted">Chat with our AI assistant to generate your first ESA report</p>
+                <a href="{{ url_for('chat') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-comment-medical me-1"></i> Start Chatting
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Documents{% endblock %}
+
+{% block head %}
+<!-- Dropzone CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+<style>
+    .dropzone {
+        border: 2px dashed #495057;
+        border-radius: 5px;
+        background-color: #181d23;
+        min-height: 200px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .dropzone .dz-message {
+        text-align: center;
+        margin: 2em 0;
+    }
+    
+    .uploaded-file {
+        padding: 0.75rem 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        background-color: #181d23;
+        position: relative;
+    }
+    
+    .file-status {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .file-actions {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .progress {
+        height: 4px;
+        margin-top: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Upload Supporting Documents</h1>
+        <p class="text-muted">
+            Upload relevant medical documentation, previous evaluations, or other supporting evidence to enhance your ESA report. 
+            We support PDF, DOC, DOCX, and TXT files up to 16MB.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 bg-dark">
+            <div class="card-header bg-dark">
+                <h2 class="h5 mb-0">Upload Documents</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('upload') }}" class="dropzone" id="documentDropzone">
+                    <div class="dz-message">
+                        <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                        <h4>Drag & Drop files here</h4>
+                        <p class="text-muted">or click to browse files</p>
+                        <p class="small text-muted">Supported formats: PDF, DOC, DOCX, TXT (Max 16MB)</p>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-dark">
+                <div class="d-flex justify-content-end">
+                    <a href="{{ url_for('chat') }}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Chat
+                    </a>
+                    <button id="uploadBtn" class="btn btn-primary">
+                        <i class="fas fa-upload me-1"></i> Upload All Files
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 bg-dark">
+            <div class="card-header bg-dark">
+                <h2 class="h5 mb-0">Your Documents</h2>
+            </div>
+            <div class="card-body">
+                {% if documents %}
+                    <div class="uploaded-documents">
+                        {% for doc in documents %}
+                            <div class="uploaded-file d-flex align-items-center">
+                                <div class="file-icon me-2">
+                                    <i class="fas {{ 'fa-file-pdf' if '.pdf' in doc.filename else 'fa-file-alt' }} text-muted"></i>
+                                </div>
+                                <div class="file-details flex-grow-1">
+                                    <div class="file-name text-truncate" style="max-width: 150px;">{{ doc.filename }}</div>
+                                    <div class="file-date small text-muted">{{ doc.upload_date.strftime('%Y-%m-%d %H:%M') }}</div>
+                                </div>
+                                <div class="file-status">
+                                    <span class="badge {{ 'bg-success' if doc.is_processed else 'bg-warning' }}">
+                                        {{ 'Processed' if doc.is_processed else 'Processing' }}
+                                    </span>
+                                </div>
+                                <div class="file-actions">
+                                    <form action="{{ url_for('delete_document', doc_id=doc.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-link text-danger" onclick="return confirm('Are you sure you want to delete this document?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
+                        <p class="text-muted">No documents uploaded yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Dropzone JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}
